@@ -211,7 +211,18 @@
 </div>
 
 <script>
-const LINK = 'https://t.me/+LVO_6MomB39hYjBi';
+const BACKEND = 'https://diamond-pi-ten.vercel.app';
+
+function buildGoUrl(){
+  function getCookie(n){var m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)'));return m?m[2]:'';}
+  function param(n){return new URLSearchParams(location.search).get(n)||'';}
+  var p=new URLSearchParams();
+  var fbclid=param('fbclid'); if(fbclid) p.set('fbclid',fbclid);
+  var fbp=getCookie('_fbp'); if(fbp) p.set('fbp',fbp);
+  var fbc=getCookie('_fbc'); if(fbc) p.set('fbc',fbc);
+  ['ad_id','adset_id','campaign_id','ad_name'].forEach(function(k){var v=param(k);if(v)p.set(k,v);});
+  return BACKEND+'/api/go?'+p.toString();
+}
 
 function trackLead(btn) {
   if(typeof fbq!=='undefined') fbq('track','Lead');
@@ -222,6 +233,14 @@ function trackLead(btn) {
     setTimeout(()=>{btn.textContent=orig;btn.classList.remove('done');},2500);
   }
 }
+
+document.addEventListener('DOMContentLoaded',function(){
+  function apply(){var u=buildGoUrl();document.querySelectorAll('.btn-main, .post-btn').forEach(function(a){a.href=u;});}
+  apply();
+  document.querySelectorAll('.btn-main, .post-btn').forEach(function(a){
+    a.addEventListener('click',function(){this.href=buildGoUrl();});
+  });
+});
 
 /* Glow + grid */
 (function(){
