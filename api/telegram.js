@@ -10,6 +10,9 @@ const redis = new Redis({
 
 const TG = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
 
+// Обкладинка, яку бот шле разом із кнопкою (файл лежить у корені репозиторію)
+const BOT_PHOTO = "https://diamond-pi-ten.vercel.app/DMND1.jpg";
+
 async function tg(method, body) {
   const r = await fetch(`${TG}/${method}`, {
     method: "POST",
@@ -104,13 +107,19 @@ export default async function handler(req, res) {
       // беремо одне посилання-заявку на кампанію (створюється раз, далі перевикористовується)
       const inviteUrl = await getCampaignLink(data);
 
-      await tg("sendMessage", {
+      const caption = "Нажми кнопку ниже, чтобы вступить в канал 👇\nПосле заявки тебя впустят автоматически.";
+      const keyboard = { inline_keyboard: [[{ text: "🚀 Вступить в канал", url: inviteUrl }]] };
+
+      // шлемо фото-обкладинку з підписом і кнопкою; якщо фото не завантажилось — просто текст
+      const photo = await tg("sendPhoto", {
         chat_id: chatId,
-        text: "Нажми кнопку ниже, чтобы вступить в канал 👇\nПосле заявки тебя впустят автоматически.",
-        reply_markup: {
-          inline_keyboard: [[{ text: "🚀 Вступить в канал", url: inviteUrl }]],
-        },
+        photo: BOT_PHOTO,
+        caption,
+        reply_markup: keyboard,
       });
+      if (!photo || !photo.ok) {
+        await tg("sendMessage", { chat_id: chatId, text: caption, reply_markup: keyboard });
+      }
 
       res.status(200).send("ok");
       return;
