@@ -76,11 +76,14 @@ async function sendCapi(d, userId) {
   if (d.fbc) event.user_data.fbc = d.fbc;
   if (d.fbp) event.user_data.fbp = d.fbp;
 
-  await fetch(url, {
+  const resp = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ data: [event] }),
   });
+  // діагностика: пишемо у логи Vercel, що відповіла Meta
+  const fbText = await resp.text();
+  console.log("CAPI_RESPONSE", resp.status, fbText);
 }
 
 export default async function handler(req, res) {
