@@ -32,6 +32,31 @@ function asObject(raw) {
   return raw;
 }
 
+// Одне посилання = одна кампанія.
+// Якщо для кампанії вже є посилання — беремо готове; якщо ні — створюємо одне й зберігаємо.
+async function getCampaignLink(d) {
+  const campKey = String(d.campaign_id || d.campaign_name || "default");
+
+  const stored = await redis.get(`camp:${campKey}`);
+  if (stored) return typeof stored === "string" ? stored : String(stored);
+
+  // назва посилання, яку буде видно в аналітиці каналу
+  const name = String(d.campaign_name || d.campaign_id || "Ads / DMND").slice(0, 32);
+
+  const link = await tg("createChatInviteLink", {
+    chat_id: process.env.CHANNEL_ID,
+    creates_join_request: true,
+    name,
+  });
+  const inviteUrl = link.result && link.result.invite_link;
+
+  if (inviteUrl) {
+    await redis.set(`camp:${campKey}`, inviteUrl); // зберігаємо для перевикористання
+    await redis.sadd("links:mine", inviteUrl);     // позначаємо як "своє"
+  }
+  return inviteUrl;
+}
+
 async function sendCapi(d, userId) {
   const url =
     `https://graph.facebook.com/v21.0/${process.env.FB_PIXEL_ID}/events` +
@@ -76,19 +101,14 @@ export default async function handler(req, res) {
       if (startToken) data = asObject(await redis.get(`s:${startToken}`));
       await redis.set(`u:${userId}`, data, { ex: 604800 }); // тримаємо 7 днів
 
-      // створюємо посилання-заявку на канал
-      const link = await tg("createChatInviteLink", {
-        chat_id: process.env.CHANNEL_ID,
-        creates_join_request: true,
-        name: `u${userId}`.slice(0, 32),
-      });
-      const inviteUrl = link.result && link.result.invite_link;
+      // беремо одне посилання-заявку на кампанію (створюється раз, далі перевикористовується)
+      const inviteUrl = await getCampaignLink(data);
 
       await tg("sendMessage", {
         chat_id: chatId,
-        text: "Натисни кнопку нижче, щоб вступити в канал 👇\nПісля заявки тебе впустять автоматично.",
+        text: "Нажми кнопку ниже, чтобы вступить в канал 👇\nПосле заявки тебя впустят автоматически.",
         reply_markup: {
-          inline_keyboard: [[{ text: "🚀 Вступити в канал", url: inviteUrl }]],
+          inline_keyboard: [[{ text: "🚀 Вступить в канал", url: inviteUrl }]],
         },
       });
 
@@ -96,9 +116,23 @@ export default async function handler(req, res) {
       return;
     }
 
-    // 2) Людина подала заявку на вступ — це і є реальна підписка
+    // 2) Людина подала заявку на вступ
     if (update.chat_join_request) {
       const userId = update.chat_join_request.from.id;
+
+      // через яке посилання прийшла заявка
+      const usedLink =
+        update.chat_join_request.invite_link &&
+        update.chat_join_request.invite_link.invite_link;
+
+      // запобіжник: чіпаємо ТІЛЬКИ заявки з посилань, які бот створив сам.
+      // Якщо посилання чуже (інше джерело) — бот мовчить і нічого не робить.
+      const isOurs = usedLink && (await redis.sismember("links:mine", usedLink));
+      if (!isOurs) {
+        res.status(200).send("ok");
+        return;
+      }
+
       const data = asObject(await redis.get(`u:${userId}`));
 
       // впускаємо людину в канал
