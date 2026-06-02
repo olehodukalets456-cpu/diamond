@@ -11,7 +11,7 @@ const redis = new Redis({
 const TG = `https://api.telegram.org/bot${process.env.BOT_TOKEN}`;
 
 // Обкладинка, яку бот шле разом із кнопкою (файл лежить у корені репозиторію)
-const BOT_PHOTO = "https://diamond-pi-ten.vercel.app/DMND1.jpg";
+const BOT_PHOTO = "https://raw.githubusercontent.com/olehodukalets456-cpu/diamond/main/DMND1.jpg";
 
 async function tg(method, body) {
   const r = await fetch(`${TG}/${method}`, {
