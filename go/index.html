@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Diamond / DMND</title>
+<style>
+  html,body{margin:0;height:100%;background:#0b0f1a;}
+</style>
+
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','971483069094869');
+fbq('track','PageView');
+</script>
+<!-- End Meta Pixel -->
+</head>
+<body>
+<script>
+(function () {
+  // !!! твоя адреса бекенду на Vercel (без слеша в кінці)
+  var BACKEND = "https://diamond-pi-ten.vercel.app";
+
+  function getCookie(n){var m=document.cookie.match(new RegExp('(^| )'+n+'=([^;]+)'));return m?m[2]:'';}
+  function param(n){return new URLSearchParams(location.search).get(n)||'';}
+
+  function go(){
+    var p = new URLSearchParams();
+    var fbclid = param('fbclid'); if(fbclid) p.set('fbclid', fbclid);
+    var fbp = getCookie('_fbp'); if(fbp) p.set('fbp', fbp);
+    var fbc = getCookie('_fbc'); if(fbc) p.set('fbc', fbc);
+    ['ad_id','adset_id','campaign_id','campaign_name','ad_name'].forEach(function(k){
+      var v = param(k); if(v) p.set(k, v);
+    });
+    // replace — щоб ця сторінка не лишалась в історії (кнопка "назад" веде в стрічку, не сюди)
+    location.replace(BACKEND + '/api/go?' + p.toString());
+  }
+
+  // даємо пікселю ~0.4с поставити куки й відправити PageView, потім миттєвий перехід
+  setTimeout(go, 400);
+})();
+</script>
+</body>
+</html>
