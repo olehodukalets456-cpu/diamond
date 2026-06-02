@@ -31,6 +31,7 @@ export default async function handler(req, res) {
       ad_id: q.ad_id || "",
       adset_id: q.adset_id || "",
       campaign_id: q.campaign_id || "",
+      campaign_name: q.campaign_name || "",
       ad_name: q.ad_name || "",
       ts: Date.now(),
     };
