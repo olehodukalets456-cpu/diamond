@@ -52,9 +52,9 @@ margin: 0;
 font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 color: var(--text);
 background:
-radial-gradient(circle at 50% 105%, rgba(21, 105, 255, 0.78), transparent 34%),
-radial-gradient(circle at 72% 26%, rgba(19, 94, 255, 0.34), transparent 36%),
-linear-gradient(145deg, #03050c 0%, #060d20 46%, #030712 100%);
+radial-gradient(circle at 50% 112%, rgba(14, 74, 180, 0.52), transparent 34%),
+radial-gradient(circle at 78% 30%, rgba(11, 48, 135, 0.22), transparent 38%),
+linear-gradient(145deg, #01030a 0%, #040817 48%, #01040d 100%);
 -webkit-font-smoothing: antialiased;
 overflow-x: hidden;
 }
@@ -66,47 +66,27 @@ font: inherit;
 a {
 color: inherit;
 }
-.binary-bg,
 .star-bg,
 .blue-wash {
 position: fixed;
 inset: 0;
 pointer-events: none;
 }
-.binary-bg {
-z-index: 2;
-display: grid;
-grid-template-columns: repeat(4, minmax(220px, 1fr));
-gap: 30px;
-padding: 54px 30px;
-overflow: hidden;
-color: rgba(66, 130, 255, 0.18);
-font-size: 18px;
-line-height: 1.78;
-font-weight: 700;
-letter-spacing: 0.04em;
-filter: blur(0.2px);
-mix-blend-mode: screen;
-}
-.binary-bg span {
-display: block;
-word-spacing: 16px;
-}
 .star-bg {
 z-index: 0;
 background:
-linear-gradient(160deg, rgba(8, 25, 70, 0.02), rgba(32, 112, 255, 0.38)),
+linear-gradient(160deg, rgba(8, 25, 70, 0), rgba(18, 73, 186, 0.2)),
 rgba(0, 0, 0, 0);
 clip-path: polygon(50% 11%, 61% 40%, 91% 35%, 66% 55%, 80% 84%, 51% 67%, 24% 88%, 33% 57%, 7% 43%, 39% 40%);
 transform: translate(-4%, 1%) scale(1.36);
-opacity: 0.74;
+opacity: 0.56;
 }
 .blue-wash {
 z-index: 1;
 background:
-radial-gradient(circle at 18% 86%, rgba(0, 118, 255, 0.52), transparent 31%),
-radial-gradient(circle at 48% 88%, rgba(23, 107, 255, 0.28), transparent 25%),
-linear-gradient(180deg, rgba(3, 7, 18, 0.12), rgba(3, 7, 18, 0.66));
+radial-gradient(circle at 18% 86%, rgba(0, 89, 214, 0.36), transparent 31%),
+radial-gradient(circle at 48% 88%, rgba(23, 107, 255, 0.18), transparent 25%),
+linear-gradient(180deg, rgba(1, 4, 13, 0.24), rgba(1, 4, 13, 0.78));
 }
 .page {
 position: relative;
@@ -114,63 +94,11 @@ z-index: 3;
 width: min(1120px, calc(100% - 32px));
 margin: 0 auto;
 }
-.topbar {
-display: flex;
-align-items: center;
-justify-content: space-between;
-gap: 18px;
-min-height: 78px;
-}
-.brand {
-display: inline-flex;
-align-items: center;
-gap: 12px;
-text-decoration: none;
-}
-.brand-mark {
-width: 42px;
-height: 42px;
-border-radius: 8px;
-object-fit: cover;
-border: 1px solid rgba(255, 255, 255, 0.16);
-box-shadow: 0 18px 42px rgba(23, 107, 255, 0.28);
-}
-.brand-name {
-display: grid;
-gap: 2px;
-}
-.brand-name strong {
-font-size: 15px;
-line-height: 1;
-letter-spacing: 0.04em;
-}
-.brand-name span {
-color: var(--soft);
-font-size: 12px;
-}
-.nav {
-display: flex;
-align-items: center;
-gap: 8px;
-}
-.nav a {
-color: rgba(248, 250, 255, 0.7);
-text-decoration: none;
-font-size: 14px;
-font-weight: 700;
-padding: 10px 12px;
-border-radius: 8px;
-transition: color 0.18s ease, background 0.18s ease;
-}
-.nav a:hover {
-color: #fff;
-background: rgba(255, 255, 255, 0.08);
-}
 .hero {
 display: grid;
 place-items: center;
-min-height: calc(100vh - 78px);
-padding: 34px 0 72px;
+min-height: 100vh;
+padding: 42px 0 72px;
 text-align: center;
 }
 .hero-inner {
@@ -307,6 +235,9 @@ white-space: nowrap;
 min-height: 540px;
 padding: 30px;
 overflow: hidden;
+}
+.vacancy-preview[hidden] {
+display: none;
 }
 .preview-kicker {
 color: var(--cyan);
@@ -521,28 +452,12 @@ min-height: 0;
 .page {
 width: min(100% - 24px, 520px);
 }
-.topbar {
-min-height: 68px;
-}
-.brand-mark {
-width: 38px;
-height: 38px;
-}
-.nav {
-display: none;
-}
-.binary-bg {
-grid-template-columns: repeat(2, minmax(170px, 1fr));
-font-size: 14px;
-line-height: 1.7;
-padding: 42px 18px;
-}
 .star-bg {
 transform: translate(-22%, 2%) scale(1.8);
-opacity: 0.46;
+opacity: 0.38;
 }
 .hero {
-min-height: calc(100vh - 68px);
+min-height: 100vh;
 padding: 22px 0 52px;
 }
 .hero-logo {
@@ -577,33 +492,13 @@ align-items: flex-start;
 </style>
 </head>
 <body>
-<div class="binary-bg" aria-hidden="true">
-<span>01000100 01001101 01001110 01000100 01000011 01000001 01010010 01000101 01000101 01010010 01010011 01000100 01001101 01001110 01000100 01000011 01000001 01010010 01000101</span>
-<span>01000011 01010010 01011001 01010000 01010100 01001111 01000100 01001101 01001110 01000100 01000010 01010101 01011001 01001001 01001110 01000111 01010011</span>
-<span>01001100 01000101 01000001 01000100 01010011 01000100 01001101 01001110 01000100 01000001 01010000 01010000 01001100 01011001 01010010 01001111 01001100 01000101</span>
-<span>01000100 01001001 01000001 01001101 01001111 01001110 01000100 01010100 01000101 01000001 01001101 01010011 01000011 01000001 01010010 01000101 01000101</span>
-</div>
 <div class="star-bg" aria-hidden="true"></div>
 <div class="blue-wash" aria-hidden="true"></div>
 <main class="page">
-<header class="topbar" aria-label="DMND Careers">
-<a class="brand" href="/careers/" aria-label="DMND Careers">
-<img class="brand-mark" src="assets/careers-logo.jpeg" alt="DMND Careers">
-<span class="brand-name">
-<strong>DMND</strong>
-<span>Careers</span>
-</span>
-</a>
-<nav class="nav" aria-label="Навігація">
-<a href="#vacancies">Вакансії</a>
-<a href="#apply">Заявка</a>
-</nav>
-</header>
-
 <section class="hero">
 <div class="hero-inner">
 <img class="hero-logo" src="assets/careers-logo.jpeg" alt="DMND Careers">
-<h1>DMND</h1>
+<h1>DMND Careers</h1>
 <p class="lead">
 Вітаємо на сайті DMND — компанії №1 у крипто-вертикалі. Diamond відкриває можливість долучитись до команди. Обери напрям, залиш Telegram, i HR зв'яжеться з тобою.
 </p>
@@ -616,11 +511,11 @@ align-items: flex-start;
 <section class="section" id="vacancies">
 <div class="section-head">
 <h2>Актуальні вакансії</h2>
-<p>Обери вакансію, щоб переглянути вимоги та задачі. Форма відкривається тільки після кнопки подачі.</p>
+<p>Обери вакансію, щоб переглянути вимоги та задачі.</p>
 </div>
 <div class="vacancy-grid">
 <div class="vacancy-list" id="vacancy-list" aria-label="Список вакансій"></div>
-<article class="vacancy-preview" id="vacancy-preview" aria-live="polite"></article>
+<article class="vacancy-preview" id="vacancy-preview" aria-live="polite" hidden></article>
 </div>
 </section>
 
@@ -824,7 +719,7 @@ option.textContent = item.title;
 vacancySelect.appendChild(option);
 
 const button = document.createElement("button");
-button.className = "vacancy-tab" + (index === 0 ? " active" : "");
+button.className = "vacancy-tab";
 button.type = "button";
 button.dataset.index = String(index);
 button.innerHTML = `<span>${escapeHtml(item.title)}</span><small>${escapeHtml(item.short)}</small>`;
@@ -838,6 +733,7 @@ return `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
 
 function renderPreview(index) {
 const item = vacancies[index] || vacancies[0];
+preview.hidden = false;
 preview.innerHTML = `
 <div class="preview-kicker">Вакансія</div>
 <h3 class="preview-title">${escapeHtml(item.title)}</h3>
@@ -900,7 +796,6 @@ return { score, elapsed };
 }
 
 renderList(vacancies);
-renderPreview(0);
 
 vacancyList.addEventListener("click", (event) => {
 const button = event.target.closest(".vacancy-tab");
