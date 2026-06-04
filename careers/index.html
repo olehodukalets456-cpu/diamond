@@ -401,11 +401,20 @@ background: rgba(10, 16, 35, 0.68);
 text-decoration: none;
 backdrop-filter: blur(18px);
 }
-.telegram-link img {
+.telegram-icon {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+flex: 0 0 auto;
 width: 52px;
 height: 52px;
 border-radius: 8px;
-object-fit: cover;
+color: #fff;
+font-size: 15px;
+font-weight: 900;
+letter-spacing: 0;
+background: linear-gradient(180deg, #51a6ff, #0961f2);
+box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), 0 16px 38px rgba(23, 107, 255, 0.28);
 }
 .telegram-link strong {
 display: block;
@@ -420,7 +429,7 @@ font-size: 13px;
 .footer {
 position: relative;
 z-index: 3;
-padding: 24px 0 36px;
+padding: 24px 0 34px;
 color: rgba(248, 250, 255, 0.4);
 font-size: 13px;
 text-align: center;
@@ -535,16 +544,16 @@ align-items: flex-start;
 </div>
 </form>
 <a class="telegram-link" href="https://t.me/+r6Dp_RB5jRJlNmNi" target="_blank" rel="noopener">
-<img src="assets/tg-logo.jpeg" alt="DMND Telegram">
+<span class="telegram-icon" aria-hidden="true">TG</span>
 <span>
-<strong>DMND Telegram channel</strong>
+<strong>DMND Telegram</strong>
 <span>Приєднатись до каналу з оновленнями та вакансіями</span>
 </span>
 </a>
 </section>
 </main>
 <footer class="footer">
-DMND Careers. Заявки з цієї сторінки підключимо до Telegram і Google Sheets наступним етапом.
+DMND Careers
 </footer>
 
 <script>
@@ -854,7 +863,7 @@ localStorage.setItem("dmnd_careers_draft", JSON.stringify(payload));
 if (typeof fbq !== "undefined") {
 fbq("track", "Lead", { content_name: vacancy, content_category: "careers" });
 }
-setNote("Заявку підготовлено. Наступним кроком підключимо відправку в Telegram і Google Sheets.", "ok");
+setNote("Дякуємо. Заявку прийнято, HR зв'яжеться з тобою у Telegram.", "ok");
 form.reset();
 started = Date.now();
 startedAt.value = String(started);
