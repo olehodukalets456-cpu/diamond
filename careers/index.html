@@ -547,7 +547,7 @@ align-items: flex-start;
 <span class="telegram-icon" aria-hidden="true">TG</span>
 <span>
 <strong>DMND Telegram</strong>
-<span>Приєднатись до каналу компанії</span>
+<span>Приєднатись до каналу з оновленнями та вакансіями</span>
 </span>
 </a>
 </section>
@@ -685,6 +685,7 @@ const preview = document.getElementById("vacancy-preview");
 const note = document.getElementById("form-note");
 const startedAt = document.getElementById("form_started_at");
 const clientScore = document.getElementById("client_score");
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbx7sMOyUd0UGHVWUHK2IQxxVKDfvLGRYYayj6b1LZMWbQ1aCm5pkprySX9fMbllu_x0/exec";
 let started = Date.now();
 const signals = {
 focus: false,
@@ -788,6 +789,22 @@ clientScore.value = String(score);
 return { score, elapsed };
 }
 
+function getCampaignName() {
+const params = new URLSearchParams(window.location.search);
+return params.get("utm_campaign") || "";
+}
+
+async function sendLead(payload) {
+await fetch(GOOGLE_SCRIPT_URL, {
+method: "POST",
+mode: "no-cors",
+headers: {
+"Content-Type": "text/plain;charset=utf-8"
+},
+body: JSON.stringify(payload)
+});
+}
+
 renderList(vacancies);
 
 vacancyList.addEventListener("click", (event) => {
@@ -851,6 +868,8 @@ const payload = {
 name,
 telegram,
 vacancy,
+utm_campaign: getCampaignName(),
+status: "",
 page: "careers",
 submitted_at: new Date().toISOString(),
 antifraud: {
@@ -858,6 +877,12 @@ score: fraud.score,
 elapsed_ms: fraud.elapsed
 }
 };
+try {
+await sendLead(payload);
+} catch (err) {
+setNote("Не вдалось надіслати заявку. Спробуйте ще раз.", "error");
+return;
+}
 localStorage.setItem(cooldownKey, String(Date.now()));
 localStorage.setItem("dmnd_careers_draft", JSON.stringify(payload));
 if (typeof fbq !== "undefined") {
