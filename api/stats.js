@@ -21,6 +21,7 @@ export default async function handler(req, res) {
 
   // зрозумілі підсумки воронки
   const funnel = {
+    "0_дійшли_до_go_редіректу": n(f.go_redirects),
     "1_бота_відкрили": n(f.start_total),
     "1a_з_рекламною_привязкою": n(f.start_with_ad),
     "1b_без_привязки": n(f.start_no_ad),
