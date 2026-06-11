@@ -78,6 +78,8 @@ async function sendCapi(d, userId) {
   };
   if (d.fbc) event.user_data.fbc = d.fbc;
   if (d.fbp) event.user_data.fbp = d.fbp;
+  if (d.client_ip) event.user_data.client_ip_address = d.client_ip;
+  if (d.client_ua) event.user_data.client_user_agent = d.client_ua;
 
   try {
     const r = await fetch(url, {
@@ -114,7 +116,7 @@ export default async function handler(req, res) {
       await bump("start_total");
       await bump(hasAdData(data) ? "start_with_ad" : "start_no_ad");
 
-      await redis.set(`u:${userId}`, data, { ex: 604800 }); // 7 днів
+      await redis.set(`u:${userId}`, data, { ex: 2592000 }); // 30 днів
 
       const inviteUrl = await getCampaignLink(data);
       const caption = "Нажми кнопку ниже, чтобы вступить в канал 👇\nПосле заявки тебя впустят автоматически.";
