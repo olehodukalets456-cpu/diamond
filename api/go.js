@@ -1,6 +1,6 @@
 // /api/go  — людина натиснула кнопку на сторінці й потрапляє сюди.
-// Тут ми ловимо мітку кліку Meta, ховаємо її під коротким токеном
-// і відправляємо людину в бота з цим токеном у посиланні.
+// Ловимо мітку кліку Meta + IP/User-Agent (для match quality), ховаємо під токеном,
+// відправляємо людину в бота з токеном у посиланні.
 import { Redis } from "@upstash/redis";
 
 const redis = new Redis({
@@ -15,13 +15,19 @@ function makeToken(n = 10) {
   return s;
 }
 
+// реальний IP клієнта за заголовками проксі
+function clientIp(req) {
+  const xff = req.headers["x-forwarded-for"];
+  if (xff) return String(xff).split(",")[0].trim();
+  return req.headers["x-real-ip"] || "";
+}
+
 export default async function handler(req, res) {
   const bot = process.env.BOT_USERNAME;
   try {
     const q = req.query || {};
     const fbclid = q.fbclid || "";
     let fbc = q.fbc || "";
-    // якщо браузер не дав готовий _fbc, але є fbclid — складаємо fbc самі
     if (!fbc && fbclid) fbc = `fb.1.${Date.now()}.${fbclid}`;
 
     const data = {
@@ -33,17 +39,20 @@ export default async function handler(req, res) {
       campaign_id: q.campaign_id || "",
       campaign_name: q.campaign_name || "",
       ad_name: q.ad_name || "",
+      // дані юзера для кращої атрибуції (ловимо тут, бо в боті це вже IP сервера)
+      client_ip: clientIp(req),
+      client_ua: req.headers["user-agent"] || "",
       ts: Date.now(),
     };
 
     const token = makeToken();
-    // зберігаємо на 1 годину — вистачить, щоб людина дійшла до каналу
-    await redis.set(`s:${token}`, data, { ex: 3600 });
+    await redis.set(`s:${token}`, data, { ex: 2592000 }); // 30 днів
+    // ДІАГНОСТИКА: скільки людей реально дійшло до редіректу в бота
+    try { await redis.hincrby("funnel", "go_redirects", 1); } catch (e) {}
 
     res.writeHead(302, { Location: `https://t.me/${bot}?start=${token}` });
     res.end();
   } catch (e) {
-    // якщо щось пішло не так — все одно ведемо людину в бота, щоб не втратити її
     res.writeHead(302, { Location: `https://t.me/${bot}` });
     res.end();
   }
