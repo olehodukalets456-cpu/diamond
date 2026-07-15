@@ -801,7 +801,7 @@ h1 {
         </div>
       </div>
 
-      <article class="vacancy-card" id="vacancy-card" aria-live="polite"></article>
+      <article class="vacancy-card" id="vacancy-card" aria-live="polite" hidden></article>
     </section>
 
     <section class="apply-section" id="apply">
@@ -1000,7 +1000,7 @@ function listMarkup(items) {
 }
 
 function renderOptions() {
-  vacancyPicker.innerHTML = "";
+  vacancyPicker.innerHTML = '<option value="" selected>Оберіть вакансію</option>';
   vacancySelect.innerHTML = '<option value="">Оберіть вакансію</option>';
 
   vacancies.forEach((item, index) => {
@@ -1017,7 +1017,14 @@ function renderOptions() {
 }
 
 function renderVacancy(index) {
-  const item = vacancies[index] || vacancies[0];
+  const item = vacancies[index];
+  if (!item) {
+    vacancyCard.hidden = true;
+    vacancyCard.innerHTML = "";
+    return;
+  }
+
+  vacancyCard.hidden = false;
   const benefits = item.benefits.length
     ? `<div class="info-strip">${item.benefits
         .map(benefit => `<div class="info-item">${escapeHtml(benefit)}</div>`)
@@ -1054,12 +1061,17 @@ function renderVacancy(index) {
 }
 
 function selectVacancy(index, syncForm = false) {
-  const safeIndex = Number.isInteger(index) && vacancies[index] ? index : 0;
-  vacancyPicker.value = String(safeIndex);
-  renderVacancy(safeIndex);
+  if (!Number.isInteger(index) || !vacancies[index]) {
+    vacancyPicker.value = "";
+    renderVacancy(-1);
+    return;
+  }
+
+  vacancyPicker.value = String(index);
+  renderVacancy(index);
 
   if (syncForm) {
-    vacancySelect.value = vacancies[safeIndex].title;
+    vacancySelect.value = vacancies[index].title;
   }
 }
 
@@ -1141,14 +1153,21 @@ renderOptions();
 
 const vacancyFromUrl = new URLSearchParams(window.location.search).get("vacancy");
 const initialIndex = vacancyFromUrl
-  ? Math.max(0, vacancies.findIndex(item =>
+  ? vacancies.findIndex(item =>
       item.title.toLowerCase().includes(vacancyFromUrl.toLowerCase())
-    ))
-  : 0;
+    )
+  : -1;
 
-selectVacancy(initialIndex, false);
+if (initialIndex >= 0) {
+  selectVacancy(initialIndex, false);
+}
 
 vacancyPicker.addEventListener("change", () => {
+  if (vacancyPicker.value === "") {
+    selectVacancy(-1, false);
+    return;
+  }
+
   selectVacancy(Number(vacancyPicker.value), false);
 });
 
