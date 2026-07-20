@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="DMND Telegram">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#3986ff"/><stop offset=".55" stop-color="#074ee2"/><stop offset="1" stop-color="#020817"/></linearGradient></defs>
+  <rect width="160" height="160" rx="34" fill="url(#g)"/>
+  <path d="M38 31 47 58 76 49 56 72 80 89 50 86 41 114 33 87 5 97 25 75 2 58 31 61Z" fill="#fff"/>
+  <text x="65" y="90" fill="#fff" font-family="Inter,Arial,sans-serif" font-size="35" font-weight="800" letter-spacing="-2">DMND</text>
+</svg>
